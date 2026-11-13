@@ -5,59 +5,248 @@
   padding: 0;
 }
 
+/* —— L'Oréal brand colors —— */
+:root {
+  --loreal-red: #ff003b;
+  --loreal-red-dark: #cc0030;
+  --loreal-red-light: #ff4d5f;
+  --loreal-gold: #e3a535;
+  --loreal-blue: #0066cc;
+  --loreal-blue-dark: #003d99;
+  --loreal-black: #000000;
+  --loreal-white: #ffffff;
+  --loreal-light-gray: #F5F5F5;
+  --loreal-medium-gray: #6D6A6B;
+  --loreal-red-bg: #ffe6eb;
+}
+
 /* —— body + fonts —— */
 body {
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
-  color: #333;
+  color: var(--loreal-black);
+  background: 
+    radial-gradient(circle at 25% 25%, var(--loreal-red) 0%, transparent 50%),
+    radial-gradient(circle at 75% 25%, var(--loreal-blue) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, var(--loreal-gold) 0%, transparent 50%),
+    radial-gradient(circle at 25% 75%, rgba(255, 255, 255, 0.8) 0%, transparent 50%),
+    linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
   display: flex;
   justify-content: center;
+  min-height: 100vh;
+  position: relative;
 }
 
 .page-wrapper {
   width: 90%;
   max-width: 900px;
+  background: var(--loreal-white);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  border: 3px solid var(--loreal-blue);
 }
 
 /* header */
 .site-header {
+  position: relative;
   text-align: center;
-  padding-top: 50px;
+  color: var(--loreal-white);
+  background: linear-gradient(135deg, var(--loreal-blue) 0%, var(--loreal-blue-dark) 100%);
+  margin: -30px -30px 0 -30px;
+  padding: 25px 30px 20px;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 4px solid var(--loreal-gold);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* A small shimmer travels along the gold line. */
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, white, transparent) no-repeat;
+  background-size: 90px 100%;
+  animation: headerShimmer 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes headerShimmer {
+  from { background-position: -90px 0; }
+  to { background-position: calc(100% + 90px) 0; }
+}
+
+.site-logo {
+  max-width: 120px;
+  height: auto;
+  margin-bottom: 12px;
+  display: block;
+  filter: brightness(0) invert(1);
+  image-rendering: crisp-edges;
 }
 
 .site-title {
   font-size: 22px;
   font-weight: 500;
   margin-bottom: 10px;
+  color: var(--loreal-white);
 }
 
 /* chat window */
 .chatbox {
   margin: 40px 0;
+  background: var(--loreal-white);
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* latest question display */
+.latest-question {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(255, 0, 59, 0.08) 0%, rgba(0, 102, 204, 0.08) 100%);
+  border-left: 4px solid var(--loreal-red);
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--loreal-black);
+  min-height: 24px;
+  display: none;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.latest-question.active {
+  display: block;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.chat-window-frame {
+  position: relative;
+  height: 360px;
+  border: 3px solid var(--loreal-red);
+  border-radius: 8px;
+}
+
+/* Keep the glow outside the scrolling message area. */
+.chat-window-frame.is-loading::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle, white 0%, rgba(255, 255, 255, 0.8) 15%, transparent 65%);
+  offset-path: inset(-1.5px round 6px);
+  offset-anchor: center;
+  animation: borderShimmer 3s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes borderShimmer {
+  to { offset-distance: 100%; }
 }
 
 .chat-window {
-  height: 360px;
-  border: 1px solid #000;
+  height: 100%;
   padding: 20px;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.5;
   overflow-y: auto;
-  background: #fafafa;
-  white-space: pre-line;
+  background: var(--loreal-white);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  border-radius: 8px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header::after,
+  .chat-window-frame.is-loading::after {
+    animation: none;
+  }
 }
 
 /* messages */
 .msg {
-  margin-bottom: 14px;
-  line-height: 1.5;
+  margin-bottom: 16px;
+  line-height: 1.6;
+  padding: 12px 16px;
+  border-radius: 12px;
+  max-width: 85%;
+  word-wrap: break-word;
+  word-break: break-word;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  animation: messageSlideIn 0.3s ease-out;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .msg.user {
-  color: #000;
+  color: var(--loreal-white);
+  font-weight: 500;
+  background: linear-gradient(135deg, var(--loreal-red) 0%, var(--loreal-red-light) 100%);
+  margin-left: auto;
+  margin-right: 0;
+  border-radius: 20px 20px 8px 20px;
+  box-shadow: 0 2px 8px rgba(255, 0, 59, 0.2);
+  text-align: right;
+  flex-direction: row-reverse;
+  max-width: 80%;
+}
+
+.msg.user::before {
+  content: "👤";
+  font-size: 18px;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .msg.ai {
-  color: #666666;
+  color: var(--loreal-black);
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
+  margin-left: 0;
+  margin-right: auto;
+  border-radius: 20px 20px 20px 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  flex-direction: row;
+  max-width: 80%;
+}
+
+.msg.ai::before {
+  content: "✨";
+  font-size: 18px;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 /* input row */
@@ -69,29 +258,43 @@ body {
 
 .chat-form input {
   flex: 1;
+  min-width: 0;
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 2px solid var(--loreal-red);
   font-size: 18px;
+  background-color: var(--loreal-white);
+  color: var(--loreal-black);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.chat-form input::placeholder {
+  color: var(--loreal-medium-gray);
 }
 
 .chat-form input:focus {
-  outline: 2px solid #000;
-  outline-offset: 2px;
+  outline: none;
+  border-color: var(--loreal-red-dark);
+  box-shadow: 0 0 0 3px rgba(255, 0, 59, 0.1);
+  background: linear-gradient(180deg, var(--loreal-white) 0%, rgba(255, 230, 235, 0.3) 100%);
 }
 
 .chat-form button {
   font-size: 18px;
-  background: #000;
-  color: #fff;
+  background: linear-gradient(135deg, var(--loreal-red) 0%, var(--loreal-red-dark) 100%);
+  color: var(--loreal-white);
   border: none;
   padding: 12px;
   width: 48px;
   height: 48px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(255, 0, 59, 0.25);
 }
 
 .chat-form button .material-icons {
@@ -99,12 +302,14 @@ body {
 }
 
 .chat-form button:hover {
-  background: #666666;
+  background: linear-gradient(135deg, var(--loreal-red-dark) 0%, var(--loreal-red) 100%);
+  box-shadow: 0 4px 12px rgba(255, 0, 59, 0.35);
+  transform: translateY(-2px);
 }
 
 .chat-form button:focus {
-  outline: 2px solid #000;
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 0, 59, 0.2), 0 4px 12px rgba(255, 0, 59, 0.35);
 }
 
 /* visually hidden */
@@ -125,7 +330,14 @@ body {
   margin: 60px 0 40px;
   text-align: center;
   font-size: 14px;
-  color: #666;
+  color: var(--loreal-white);
+  border-top: 3px solid var(--loreal-gold);
+  padding: 20px;
+  background: linear-gradient(135deg, var(--loreal-red) 0%, var(--loreal-red-dark) 100%);
+  border-radius: 8px;
+  margin-top: 60px;
+  border: 2px solid var(--loreal-gold);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .site-footer nav {
@@ -134,10 +346,77 @@ body {
 
 .site-footer a {
   margin: 0 8px;
-  color: #000;
+  color: var(--loreal-white);
   text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .site-footer a:hover {
-  color: #666666;
+  color: var(--loreal-gold);
+  text-decoration: underline;
+  transform: scale(1.05);
+}
+
+/* Keep the same layout while reducing spacing on smaller screens. */
+@media (max-width: 768px) {
+  .page-wrapper {
+    padding: 22px;
+  }
+
+  .site-header {
+    margin: -22px -22px 0;
+    padding: 25px 22px 20px;
+  }
+
+  .chatbox {
+    margin: 32px 0;
+    padding: 20px;
+  }
+
+  .site-footer {
+    margin: 48px 0 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-wrapper {
+    padding: 14px;
+  }
+
+  .site-header {
+    margin: -14px -14px 0;
+    padding: 20px 14px 16px;
+  }
+
+  .chatbox {
+    margin: 24px 0;
+    padding: 14px;
+  }
+
+  .chat-window {
+    padding: 14px;
+  }
+
+  .msg.user,
+  .msg.ai {
+    max-width: 90%;
+  }
+
+  .site-footer {
+    margin: 32px 0 24px;
+    padding: 16px;
+  }
+
+  .site-footer nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 16px;
+  }
+
+  .site-footer a {
+    margin: 0;
+  }
 }
